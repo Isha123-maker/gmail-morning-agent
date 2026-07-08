@@ -1,0 +1,11 @@
+langchain
+wikipedia
+langchain-community
+langchain-google-genai
+python-dotenv
+pydantic
+google-auth
+streamlit
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client

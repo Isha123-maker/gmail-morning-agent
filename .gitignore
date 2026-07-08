@@ -1,0 +1,14 @@
+# Secrets - never upload these!
+credentials.json
+token.json
+.env
+
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# VS Code settings (optional)
+.vscode/

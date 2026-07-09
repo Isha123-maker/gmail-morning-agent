@@ -18,7 +18,7 @@ def summarize_emails(emails: list) -> str:
 
     # Initialize Gemini
     llm = ChatGoogleGenerativeAI(
-        model="gemini-1.5-flash",  # Free and fast!
+        model="gemini-2.5-flash",  # Free and fast!
         google_api_key=os.getenv("GEMINI_API_KEY"),
         temperature=0.3  # Lower = more focused, less creative
     )

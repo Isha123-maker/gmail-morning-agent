@@ -1,25 +1,34 @@
 # gmail_reader.py
 import os
+import json
+import base64
+from datetime import datetime, timedelta
+
+import streamlit as st
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
-import base64
-from datetime import datetime, timedelta
 
 # This is the "permission level" we're asking Gmail for
 # Read-only means the agent can only READ, never delete or send
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 
+
 def get_gmail_service():
-    """Sets up connection to Gmail. Like logging in, but for robots."""
+    """Sets up connection to Gmail. Works both locally and on Streamlit Cloud."""
     creds = None
 
-    # If we've logged in before, reuse that saved login
-    if os.path.exists('token.json'):
+    # ✅ CLOUD: Try loading from Streamlit secrets first
+    if "gmail_token" in st.secrets:
+        token_data = json.loads(st.secrets["gmail_token"]["token_json"])
+        creds = Credentials.from_authorized_user_info(token_data, SCOPES)
+
+    # ✅ LOCAL: Fall back to local token.json file
+    elif os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
 
-    # If no saved login or it expired, do a fresh login
+    # If no valid creds, refresh or do a fresh login (local only)
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
@@ -27,7 +36,7 @@ def get_gmail_service():
             flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
             creds = flow.run_local_server(port=0)
 
-        # Save login for next time
+        # Save login for next time (local only)
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
 

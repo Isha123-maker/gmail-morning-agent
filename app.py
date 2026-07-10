@@ -177,6 +177,7 @@ st.markdown(f"""
 with st.sidebar:
     st.markdown("### ⚡ Settings")
     max_emails = st.slider("Max emails to fetch", 5, 50, 20)
+    mark_read = st.checkbox("✅ Mark emails as read after summarizing", value=True)
 
     st.markdown("---")
     st.markdown("### 🧠 How It Works")
@@ -196,7 +197,7 @@ if fetch_clicked:
 
     with st.spinner("Connecting to Gmail..."):
         try:
-            emails = get_todays_emails(max_emails=max_emails)
+            emails = get_todays_emails(max_emails=max_emails, mark_read=mark_read)
         except Exception as e:
             st.error(f"Gmail connection failed: {str(e)}")
             st.stop()

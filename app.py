@@ -239,7 +239,8 @@ if fetch_clicked:
     # --- Summary Section ---
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("#### 📋 Briefing")
-    st.markdown(f"""<div class="summary-box">{summary}</div>""", unsafe_allow_html=True)
+    with st.container(border=True):
+        st.text(summary)
 
     # --- Raw Emails ---
     st.markdown("<br>", unsafe_allow_html=True)
@@ -247,13 +248,17 @@ if fetch_clicked:
         if not emails:
             st.info("No emails found for today.")
         for i, email in enumerate(emails, 1):
-            st.markdown(f"""
-            <div class="email-item">
-                <strong>{email['subject']}</strong><br>
-                <span style="color:#9CA3AF; font-size:0.82rem;">From: {email['from']}</span>
-                <p style="margin-top:0.5rem; color:#C4C7D4; font-size:0.9rem;">{email['body'][:250]}...</p>
-            </div>
-            """, unsafe_allow_html=True)
+           with st.container(border=True):
+              st.caption(f"Email {i}")
+              st.text(f"Subject: {email.get('subject', '(No subject)')}")
+              st.text(f"From: {email.get('from', 'Unknown sender')}")
+
+              body = email.get("body") or ""
+              preview = body[:250]
+              if len(body) > 250:
+                  preview += "..."
+
+              st.text(preview)
 
 else:
     st.markdown("<br>", unsafe_allow_html=True)

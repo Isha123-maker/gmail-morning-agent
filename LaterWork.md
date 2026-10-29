@@ -1,0 +1,1 @@
+1. gmail.readonly is a restricted Gmail scope, so publishing this as a public multi-user app may require additional Google verification. We’ll address that before deployment.

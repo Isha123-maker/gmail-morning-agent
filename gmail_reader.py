@@ -2,7 +2,8 @@
 import os
 import json
 import base64
-from datetime import datetime, timedelta
+from datetime import datetime, time, timedelta
+from zoneinfo import ZoneInfo
 
 import streamlit as st
 from google.auth.transport.requests import Request
@@ -12,7 +13,24 @@ from googleapiclient.discovery import build
 
 # This is the "permission level" we're asking Gmail for
 # Read-only means the agent can only READ, never delete or send
-SCOPES = ['https://www.googleapis.com/auth/gmail.modify']
+SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
+PAKISTAN_TIMEZONE = ZoneInfo("Asia/Karachi")
+
+
+def build_today_query(now=None):
+    """Build a Gmail query for the current calendar day in Pakistan time."""
+    if now is None:
+        now = datetime.now(PAKISTAN_TIMEZONE)
+    elif now.tzinfo is None:
+        raise ValueError("now must include timezone information")
+
+    local_now = now.astimezone(PAKISTAN_TIMEZONE)
+    start_of_day = datetime.combine(local_now.date(), time.min, tzinfo=PAKISTAN_TIMEZONE)
+    start_of_tomorrow = start_of_day + timedelta(days=1)
+
+    start_timestamp = int(start_of_day.timestamp())
+    tomorrow_timestamp = int(start_of_tomorrow.timestamp())
+    return f"after:{start_timestamp} before:{tomorrow_timestamp}"
 
 
 def get_gmail_service():
@@ -47,12 +65,11 @@ def get_gmail_service():
 
 
 
-def get_todays_emails(max_emails=20, mark_read=True):
-    """Fetches today's emails from Gmail, and optionally marks them as read."""
+def get_todays_emails(max_emails=20):
+    """Fetches today's emails from Gmail without modifying them."""
     service = get_gmail_service()
 
-    today = datetime.now().strftime('%Y/%m/%d')
-    query = f'after:{today}'
+    query = build_today_query()
 
     results = service.users().messages().list(
         userId='me',
@@ -85,14 +102,45 @@ def get_todays_emails(max_emails=20, mark_read=True):
             'body': body[:1000]
         })
 
-        # ✅ Mark this email as read right after processing it
-        if mark_read:
-            mark_as_read(service, msg['id'])
 
     return emails
     
 
+
 def extract_body(payload):
+    """Extract plain-text content from an email, including nested MIME parts."""
+    plain_text_parts = []
+    html_parts = []
+
+    def walk_parts(part):
+        mime_type = part.get("mimeType", "")
+        body_data = part.get("body", {}).get("data")
+
+        if mime_type == "text/plain" and body_data:
+            plain_text_parts.append(body_data)
+        elif mime_type == "text/html" and body_data:
+            html_parts.append(body_data)
+
+        for child in part.get("parts", []):
+            walk_parts(child)
+
+    walk_parts(payload)
+
+    # Prefer plain text whenever the email provides it.
+    encoded_parts = plain_text_parts or html_parts
+    decoded_parts = []
+
+    for data in encoded_parts:
+        try:
+            decoded = base64.urlsafe_b64decode(data).decode(
+                "utf-8", errors="replace"
+            )
+            decoded_parts.append(decoded)
+        except (ValueError, UnicodeError):
+            continue
+
+    return "\n".join(decoded_parts).strip()
+
     """Pulls the actual text out of the email."""
     body = ""
 
@@ -109,11 +157,3 @@ def extract_body(payload):
             body = base64.urlsafe_b64decode(data).decode('utf-8', errors='ignore')
 
     return body.strip()
-
-def mark_as_read(service, message_id):
-    """Removes the UNREAD label from an email — marks it as read."""
-    service.users().messages().modify(
-        userId='me',
-        id=message_id,
-        body={'removeLabelIds': ['UNREAD']}
-    ).execute()

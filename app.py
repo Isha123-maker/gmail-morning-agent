@@ -1,8 +1,13 @@
 # app.py
+import logging
+
 import streamlit as st
 from datetime import datetime
 from gmail_reader import get_todays_emails
 from summarizer import summarize_emails
+
+logging.basicConfig(level=logging.ERROR)
+logger = logging.getLogger(__name__)
 
 # --- Page Config ---
 st.set_page_config(
@@ -177,7 +182,6 @@ st.markdown(f"""
 with st.sidebar:
     st.markdown("### ⚡ Settings")
     max_emails = st.slider("Max emails to fetch", 5, 50, 20)
-    mark_read = st.checkbox("✅ Mark emails as read after summarizing", value=True)
 
     st.markdown("---")
     st.markdown("### 🧠 How It Works")
@@ -197,16 +201,28 @@ if fetch_clicked:
 
     with st.spinner("Connecting to Gmail..."):
         try:
-            emails = get_todays_emails(max_emails=max_emails, mark_read=mark_read)
-        except Exception as e:
-            st.error(f"Gmail connection failed: {str(e)}")
-            st.stop()
+            emails = get_todays_emails(max_emails=max_emails)
+        except Exception:
+           logger.exception("Failed to fetch emails from Gmail")
+           st.error(
+             "We couldn't connect to Gmail or fetch your  emails. "
+             "Please check your connection and Gmail authorization, then try again."
+            )
+           st.stop()
+        
+    if not emails:
+        st.info("📭 No emails found for today. You're all caught up!")
+        st.stop()
 
     with st.spinner("Generating your briefing..."):
         try:
             summary = summarize_emails(emails)
-        except Exception as e:
-            st.error(f"Summarization failed: {str(e)}")
+        except Exception:
+            logger.exception("Failed to generate the email summary")
+            st.error(
+               "We couldn't generate your briefing. "
+               "Please check your Gemini API configuration and try again."
+           )
             st.stop()
 
     st.markdown("<br>", unsafe_allow_html=True)
@@ -240,7 +256,7 @@ if fetch_clicked:
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("#### 📋 Briefing")
     with st.container(border=True):
-        st.text(summary)
+        st.markdown(summary)
 
     # --- Raw Emails ---
     st.markdown("<br>", unsafe_allow_html=True)

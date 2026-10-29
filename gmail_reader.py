@@ -90,11 +90,18 @@ def get_todays_emails(max_emails=20):
             format='full'
         ).execute()
 
-        headers = full_msg['payload']['headers']
-        subject = next((h['value'] for h in headers if h['name'] == 'Subject'), 'No Subject')
-        sender = next((h['value'] for h in headers if h['name'] == 'From'), 'Unknown Sender')
+        payload = full_msg.get('payload') or {}
+        headers = payload.get('headers') or []
+        subject = next(
+            (h.get('value') for h in headers if h.get('name', '').lower() == 'subject' and h.get('value')),
+            'No Subject',
+        )
+        sender = next(
+            (h.get('value') for h in headers if h.get('name', '').lower() == 'from' and h.get('value')),
+            'Unknown Sender',
+        )
 
-        body = extract_body(full_msg['payload'])
+        body = extract_body(payload)
 
         emails.append({
             'subject': subject,
@@ -114,17 +121,20 @@ def extract_body(payload):
 
     def walk_parts(part):
         mime_type = part.get("mimeType", "")
-        body_data = part.get("body", {}).get("data")
+        body = part.get("body") or {}
+        body_data = body.get("data") if isinstance(body, dict) else None
 
         if mime_type == "text/plain" and body_data:
             plain_text_parts.append(body_data)
         elif mime_type == "text/html" and body_data:
             html_parts.append(body_data)
 
-        for child in part.get("parts", []):
-            walk_parts(child)
+        for child in part.get("parts") or []:
+            if isinstance(child, dict):
+                walk_parts(child)
 
-    walk_parts(payload)
+    if isinstance(payload, dict):
+        walk_parts(payload)
 
     # Prefer plain text whenever the email provides it.
     encoded_parts = plain_text_parts or html_parts
@@ -141,19 +151,3 @@ def extract_body(payload):
 
     return "\n".join(decoded_parts).strip()
 
-    """Pulls the actual text out of the email."""
-    body = ""
-
-    if 'parts' in payload:
-        for part in payload['parts']:
-            if part['mimeType'] == 'text/plain':
-                data = part['body'].get('data', '')
-                if data:
-                    body = base64.urlsafe_b64decode(data).decode('utf-8', errors='ignore')
-                    break
-    else:
-        data = payload['body'].get('data', '')
-        if data:
-            body = base64.urlsafe_b64decode(data).decode('utf-8', errors='ignore')
-
-    return body.strip()

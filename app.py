@@ -256,7 +256,7 @@ if fetch_clicked:
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("#### 📋 Briefing")
     with st.container(border=True):
-        st.markdown(summary)
+        st.markdown(summary, unsafe_allow_html=False)
 
     # --- Raw Emails ---
     st.markdown("<br>", unsafe_allow_html=True)

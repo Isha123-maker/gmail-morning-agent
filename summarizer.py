@@ -6,6 +6,13 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+def validate_config() -> None:
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key or api_key == "your_gemini_api_key_here":
+        raise ValueError(
+            "GEMINI_API_KEY is missing or still uses the example placeholder."
+        )
+
 def summarize_emails(emails: list) -> str:
     """
     Takes a list of emails and returns a clean summary.
@@ -15,6 +22,9 @@ def summarize_emails(emails: list) -> str:
 
     if not emails:
         return "📭 No emails found for today! Inbox zero — you're winning!"
+    
+            
+    validate_config()
 
     # Initialize Gemini
     llm = ChatGoogleGenerativeAI(

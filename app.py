@@ -29,8 +29,8 @@ st.markdown("""
 
     /* App background - deep gradient */
     .stApp {
-        background: radial-gradient(circle at top left, #1a1f3c 0%, #0d0f1c 45%, #0a0b14 100%);
-        color: #E6E8F0;
+        background: radial-gradient(circle at top left, #FBDCE2 0%, #DEDEE0 45%, #DEDEE0 100%);
+        color: #333333;
     }
 
     /* Hide default header decoration */
@@ -47,7 +47,7 @@ st.markdown("""
     .app-title {
         font-size: 2.2rem;
         font-weight: 800;
-        background: linear-gradient(90deg, #7F5AF0, #2CB67D);
+        background: linear-gradient(90deg, #FF9FB2, #60AB9A);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 0.3rem;
@@ -55,15 +55,15 @@ st.markdown("""
 
     .app-subtitle {
         font-size: 0.95rem;
-        color: #9CA3AF;
+        color: #60AB9A;
         font-weight: 400;
     }
 
     /* Glass metric cards */
     .metric-card {
-        background: rgba(255, 255, 255, 0.04);
+        background: rgba(251, 220, 226, 0.55);
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(96, 171, 154, 0.24);
         border-radius: 14px;
         padding: 1.3rem 1rem;
         text-align: center;
@@ -71,21 +71,21 @@ st.markdown("""
     }
 
     .metric-card:hover {
-        border-color: rgba(127, 90, 240, 0.5);
+        border-color: rgba(255, 159, 178, 0.8);
         transform: translateY(-2px);
     }
 
     .metric-value {
         font-size: 1.7rem;
         font-weight: 700;
-        background: linear-gradient(90deg, #7F5AF0, #2CB67D);
+        background: linear-gradient(90deg, #FF9FB2, #60AB9A);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
 
     .metric-label {
         font-size: 0.75rem;
-        color: #9CA3AF;
+        color: #60AB9A;
         text-transform: uppercase;
         letter-spacing: 0.8px;
         margin-top: 0.3rem;
@@ -93,54 +93,61 @@ st.markdown("""
 
     /* Summary glass box */
     .summary-box {
-        background: rgba(255, 255, 255, 0.03);
+        background: rgba(251, 220, 226, 0.55);
         backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(96, 171, 154, 0.24);
         border-radius: 16px;
         padding: 1.8rem;
         margin-top: 1rem;
         line-height: 1.6;
-        color: #E6E8F0;
+        color: #333333;
     }
 
     /* Email item cards */
     .email-item {
-        background: rgba(255, 255, 255, 0.03);
-        border-left: 3px solid #7F5AF0;
+        background: rgba(251, 220, 226, 0.55);
+        border-left: 3px solid #FF9FB2;
         border-radius: 8px;
         padding: 0.9rem 1.1rem;
         margin-bottom: 0.8rem;
     }
 
     .email-item strong {
-        color: #F0F0F5;
+        color: #333333;
     }
 
     /* Buttons - gradient */
     .stButton>button {
-        background: linear-gradient(90deg, #7F5AF0, #2CB67D);
-        color: white;
+        background: linear-gradient(90deg, #FF9FB2, #60AB9A);
+        color: #333333;
         border-radius: 10px;
         padding: 0.7rem 1.8rem;
         font-weight: 600;
         border: none;
         transition: all 0.25s ease;
-        box-shadow: 0 4px 20px rgba(127, 90, 240, 0.25);
+        box-shadow: 0 4px 20px rgba(96, 171, 154, 0.25);
     }
 
     .stButton>button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 28px rgba(127, 90, 240, 0.4);
+        box-shadow: 0 6px 28px rgba(96, 171, 154, 0.4);
     }
 
     /* Sidebar styling */
     section[data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #12142a 0%, #0a0b14 100%);
-        border-right: 1px solid rgba(255,255,255,0.06);
+        background: linear-gradient(180deg, #FBDCE2 0%, #DEDEE0 100%);
+        border-right: 1px solid rgba(96, 171, 154, 0.24);
+        color: #333333;
+    }
+
+    section[data-testid="stSidebar"] .stMarkdown,
+    section[data-testid="stSidebar"] .stMarkdown p,
+    section[data-testid="stSidebar"] [data-testid="stCaptionContainer"] {
+        color: #333333 !important;
     }
 
     section[data-testid="stSidebar"] .stMarkdown h3 {
-        color: #E6E8F0;
+        color: #333333;
         font-size: 0.95rem;
         font-weight: 700;
         text-transform: uppercase;
@@ -148,23 +155,23 @@ st.markdown("""
     }
 
     section[data-testid="stSidebar"] hr {
-        border-color: rgba(255,255,255,0.08);
+        border-color: rgba(96, 171, 154, 0.24);
     }
 
     /* Slider label */
     section[data-testid="stSidebar"] label {
-        color: #C4C7D4 !important;
+        color: #333333 !important;
     }
 
     /* Info/error boxes */
     div[data-testid="stAlert"] {
-        background: rgba(255, 255, 255, 0.04);
+        background: rgba(251, 220, 226, 0.55);
         border-radius: 12px;
     }
 
     /* Expander */
     .streamlit-expanderHeader {
-        background: rgba(255,255,255,0.03);
+        background: rgba(251, 220, 226, 0.55);
         border-radius: 10px;
     }
 </style>

@@ -1,94 +1,23 @@
 # Mail Brief
 
-Mail Brief is a local Streamlit app that fetches today’s Gmail messages and uses Google Gemini to create a concise morning briefing.
+Mail Brief has a Gmail-connected app (`app.py`) and a separate public portfolio demo (`demo_app.py`). The demo uses only fictional sample messages and does not connect to Gmail or use Gmail OAuth.
 
-## Features
+## Run the fictional demo
 
-- Reads messages from the current day in Pakistan time.
-- Requests Gmail read-only access.
-- Summarizes messages with Gemini (`gemini-2.5-flash`).
-- Shows a briefing and individual email previews in a Streamlit interface.
-- Handles missing email fields and nested MIME message parts.
+From this project folder, install the existing dependencies if needed, then run:
 
-## Requirements
+```bash
+streamlit run demo_app.py
+```
 
-- Python 3.12
-- A Google Cloud OAuth client configured for the Gmail API
-- A Gemini API key
+Gemini is optional for trying the demo. To generate a live briefing, set `GEMINI_API_KEY` in your environment or in a local `.env` file. You can start from `.env.example`, replacing its placeholder with your Gemini API key. Never commit the real key.
 
-## Setup
+If the key is missing or Gemini is unavailable, the demo explains that and displays a clearly labeled sample briefing. The messages and briefing fallback are fictional.
 
-1. Clone the repository and open its folder:
+## Run the original Gmail app
 
-   ```powershell
-   git clone https://github.com/Isha123-maker/gmail-morning-agent.git
-   cd gmail-morning-agent
-   ```
+The original app remains available separately:
 
-2. Create and activate a virtual environment:
-
-   ```powershell
-   py -3.12 -m venv .venv
-   .\.venv\Scripts\Activate.ps1
-   ```
-
-3. Install the pinned dependencies:
-
-   ```powershell
-   python -m pip install -r requirements.txt
-   ```
-
-4. Create a `.env` file in the project folder with your Gemini API key:
-
-   ```dotenv
-   GEMINI_API_KEY=your_gemini_api_key
-   ```
-
-5. Configure Gmail OAuth:
-
-   - Enable the Gmail API in your Google Cloud project.
-   - Create an OAuth client for a desktop application.
-   - Download its client credentials file into the project folder as `credentials.json`.
-   - Add your Google account as a test user if your OAuth app is in testing mode.
-
-   The app requests this scope:
-
-   ```text
-   https://www.googleapis.com/auth/gmail.readonly
-   ```
-
-   On first launch, a browser window opens for Google authorization. After successful authorization, a local `token.json` file is created for later runs.
-
-## Run the app
-
-From the project folder, with the virtual environment active:
-
-```powershell
+```bash
 streamlit run app.py
 ```
-
-Choose **Generate Today's Briefing** to fetch today’s messages and create the briefing.
-
-## Run tests
-
-Run the full test suite:
-
-```powershell
-python -m unittest discover -s tests -v
-```
-
-The tests cover Gmail message parsing, timezone-aware date queries, safe rendering of email and summary content, missing Gmail credentials, and missing Gemini key validation.
-
-## Local files and secrets
-
-Keep these files private and out of version control:
-
-- `.env`
-- `credentials.json`
-- `token.json`
-
-The repository’s `.gitignore` is configured to exclude these files. Never commit or share their contents. If an OAuth token must be reset, stop the app and remove `token.json`; the next run will ask you to authorize again.
-
-## Current scope
-
-This version is intended for local use with one Gmail account. It does not implement per-user OAuth or encrypted multi-user token storage. It is not yet configured as a public service.

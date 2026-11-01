@@ -17,6 +17,24 @@ An AI agent that reads today's emails, flags the urgent ones, and gives you a qu
 - `app.py`: the original app that connects to your own Gmail.
 
 ## Run the fictional demo
+
+From the project folder (`gmail-morning-agent`), create and activate a virtual environment, then install the project dependencies.
+
+**Windows (PowerShell)**
+```powershell
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+```
+
+**macOS / Linux**
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+```
+
+With the virtual environment activated, start the demo:
 ```bash
 streamlit run demo_app.py
 ```

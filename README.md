@@ -1,4 +1,4 @@
-# Mail Brief
+# Mail Brief (gmail-morning-agent)
 
 An AI agent that reads today's emails, flags the urgent ones, and gives you a quick morning briefing, so you don't have to open every message.
 

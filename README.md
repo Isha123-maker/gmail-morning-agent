@@ -12,6 +12,9 @@ An AI agent that reads today's emails, flags the urgent ones, and gives you a qu
 - Shows a briefing and individual email previews in a Streamlit interface.
 - Handles missing email fields and nested MIME message parts.
 
+## Demo
+▶️ [Watch the 40-second demo](https://youtu.be/KgnQDjKsNr4). It uses fictional sample emails and an AI voiceover.
+
 ## Two ways to run it
 - `demo_app.py`: a public demo with **fictional** sample emails. It does not connect to Gmail.
 - `app.py`: the original app that connects to your own Gmail.
